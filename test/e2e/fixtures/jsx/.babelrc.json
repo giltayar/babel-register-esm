@@ -1,0 +1,4 @@
+{
+  "plugins": ["@babel/plugin-transform-react-jsx"],
+  "ignore": ["ignored.js"]
+}
