@@ -47,6 +47,14 @@ your `babelrc.json` needs to look something like this:
 }
 ```
 
+## Usage in Mocha (and probably other test-runners)
+
+To use it in Mocha, add `loader=babel-register-esm` to the mocha arguments, e.g.
+
+```shell
+mocha --loader=babel-register-esm some-test.js
+```
+
 ## API
 
 There is no API. This is just an ESM loader.
