@@ -43,6 +43,10 @@ describe('babel-register-esm (e2e)', function () {
   it('should support all kinds of babelrc files, not just json', async () => {
     expect((await executeFileWithLoader('babelrcjs', 'jsx.js')).all).to.equal('button')
   })
+
+  it('should support non-file imports', async () => {
+    expect((await executeFileWithLoader('non-file', 'jsx.js')).all).to.equal('button')
+  })
 })
 
 /**

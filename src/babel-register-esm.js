@@ -11,13 +11,16 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  * @returns {Promise<{ format: string }>}
  */
 export async function getFormat(url, context, defaultGetFormat) {
-  const extension = path.extname(fileURLToPath(url))
+  const urlUrl = new URL(url)
 
-  if (SUPPORTED_EXTENSIONS.includes(extension)) {
-    return defaultGetFormat(url.slice(0, -extension.length) + '.js', context, defaultGetFormat)
-  } else {
-    return defaultGetFormat(url, context, defaultGetFormat)
+  if (urlUrl.protocol === 'file:') {
+    const extension = path.extname(fileURLToPath(url))
+
+    if (SUPPORTED_EXTENSIONS.includes(extension)) {
+      return defaultGetFormat(url.slice(0, -extension.length) + '.js', context, defaultGetFormat)
+    }
   }
+  return defaultGetFormat(url, context, defaultGetFormat)
 }
 
 /**
