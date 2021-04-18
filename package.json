@@ -1,6 +1,6 @@
 {
   "name": "babel-register-esm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ESM loader for Babel, similar to @babel/register",
   "type": "module",
   "exports": "./src/babel-register-esm.js",
