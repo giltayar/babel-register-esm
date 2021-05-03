@@ -16,6 +16,7 @@
     "emitDeclarationOnly": true,
     "declarationDir": "types",
     "maxNodeModuleJsDepth": 0,
+    "jsx": "preserve",
     "skipLibCheck": true,
   },
   "include": ["src/**/*.js", "src/**/*.d.ts", "test/**/*.js", "test/**/*.d.ts", "test/e2e/fixtures/jsx/jsx.jsx"],

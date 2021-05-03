@@ -5,6 +5,50 @@ import babel from '@babel/core'
 const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
 
 /**
+ * @param {string} specifier
+ * @param {{
+ *   conditions: !Array<string>,
+ *   parentURL: !(string | undefined),
+ * }} context
+ * @param {Function} defaultResolve
+ * @returns {Promise<{ url: string }>}
+ */
+export async function resolve(specifier, context, defaultResolve) {
+  try {
+    return defaultResolve(specifier, context, defaultResolve)
+  } catch (error) {
+    if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
+
+    const extension = path.extname(specifier)
+
+    if (error.code === 'ERR_MODULE_NOT_FOUND' && extension === '.js') {
+      const sameFileButTs = specifier.replace(/\.js$/, '.ts')
+      const sameFileButTsx = specifier.replace(/\.js$/, '.tsx')
+
+      const resolvedTs = tryResolve(sameFileButTs)
+      if (resolvedTs) return resolvedTs
+
+      const resolvedTsx = tryResolve(sameFileButTsx)
+      if (resolvedTsx) return resolvedTsx
+
+      throw error
+    } else {
+      throw error
+    }
+  }
+
+  /**
+   * @param {string} specifier
+   */
+  function tryResolve(specifier) {
+    try {
+      return defaultResolve(specifier, context, defaultResolve)
+    } catch (error) {
+      return undefined
+    }
+  }
+}
+/**
  * @param {string} url
  * @param {Object} context
  * @param {Function} defaultGetFormat

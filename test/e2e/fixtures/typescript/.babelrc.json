@@ -1,4 +1,7 @@
 {
-  "plugins": ["@babel/plugin-transform-typescript"],
-  "include": ["**/*.ts"]
+  "plugins": [
+    ["@babel/plugin-transform-typescript", {"isTSX": true}],
+    "@babel/plugin-transform-react-jsx"
+  ],
+  "include": ["**/*.ts", "**/*.tsx"]
 }
