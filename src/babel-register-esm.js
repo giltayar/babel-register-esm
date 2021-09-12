@@ -16,7 +16,7 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
 export async function resolve(specifier, context, defaultResolve) {
   try {
     return defaultResolve(specifier, context, defaultResolve)
-  } catch (error) {
+  } catch (/**@type {any} */ error) {
     if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
 
     const extension = path.extname(specifier)
@@ -25,10 +25,10 @@ export async function resolve(specifier, context, defaultResolve) {
       const sameFileButTs = specifier.replace(/\.js$/, '.ts')
       const sameFileButTsx = specifier.replace(/\.js$/, '.tsx')
 
-      const resolvedTs = tryResolve(sameFileButTs)
+      const resolvedTs = await tryResolve(sameFileButTs)
       if (resolvedTs) return resolvedTs
 
-      const resolvedTsx = tryResolve(sameFileButTsx)
+      const resolvedTsx = await tryResolve(sameFileButTsx)
       if (resolvedTsx) return resolvedTsx
 
       throw error
@@ -40,9 +40,9 @@ export async function resolve(specifier, context, defaultResolve) {
   /**
    * @param {string} specifier
    */
-  function tryResolve(specifier) {
+  async function tryResolve(specifier) {
     try {
-      return defaultResolve(specifier, context, defaultResolve)
+      return await defaultResolve(specifier, context, defaultResolve)
     } catch (error) {
       return undefined
     }
