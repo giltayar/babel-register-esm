@@ -15,7 +15,7 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  */
 export async function resolve(specifier, context, defaultResolve) {
   try {
-    return defaultResolve(specifier, context, defaultResolve)
+    return await defaultResolve(specifier, context, defaultResolve)
   } catch (/**@type {any} */ error) {
     if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
 
