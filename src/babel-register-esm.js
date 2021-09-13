@@ -19,16 +19,20 @@ export async function resolve(specifier, context, defaultResolve) {
   } catch (/**@type {any} */ error) {
     if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
 
-    const extension = path.extname(specifier)
+    const extension = path.extname(
+      fileURLToPath(/**@type {import('url').URL}*/ (new URL(specifier, context.parentURL))),
+    )
 
     if (error.code === 'ERR_MODULE_NOT_FOUND' && extension === '.js') {
-      const sameFileButTs = specifier.replace(/\.js$/, '.ts')
-      const sameFileButTsx = specifier.replace(/\.js$/, '.tsx')
+      const specifierUrl = new URL(specifier, context.parentURL)
+      const sameFileButTs = replaceExtension(specifierUrl, '.js', '.ts')
 
       const resolvedTs = await tryResolve(sameFileButTs)
       if (resolvedTs) return resolvedTs
 
+      const sameFileButTsx = replaceExtension(specifierUrl, '.js', '.tsx')
       const resolvedTsx = await tryResolve(sameFileButTsx)
+
       if (resolvedTsx) return resolvedTsx
 
       throw error
@@ -61,10 +65,22 @@ export async function getFormat(url, context, defaultGetFormat) {
     const extension = path.extname(fileURLToPath(url))
 
     if (SUPPORTED_EXTENSIONS.includes(extension)) {
-      return defaultGetFormat(url.slice(0, -extension.length) + '.js', context, defaultGetFormat)
+      return defaultGetFormat(replaceExtension(urlUrl, extension, '.js'), context, defaultGetFormat)
     }
   }
   return defaultGetFormat(url, context, defaultGetFormat)
+}
+
+/**
+ *
+ * @param {URL} url
+ * @param {string} fromExtension
+ * @param {string} toExtension
+ */
+function replaceExtension(url, fromExtension, toExtension) {
+  url.pathname = url.pathname.slice(0, -fromExtension.length) + toExtension
+
+  return url.href
 }
 
 /**

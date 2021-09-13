@@ -36,6 +36,12 @@ describe('babel-register-esm (e2e)', function () {
     expect(result.all).to.equal('hi\nbutton')
   })
 
+  it('should work with TypeScript TSX, importing a url with query params', async () => {
+    const result = await executeFileWithLoader('typescript-with-query-params', 'ts2.tsx')
+
+    expect(result.all).to.equal('hi\nbutton')
+  })
+
   it('should ignore ignorec files', async () => {
     expect(
       await executeFileWithLoader('jsx', 'ignored.js').catch((error) => error.message),
