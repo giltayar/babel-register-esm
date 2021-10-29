@@ -42,7 +42,7 @@ describe('babel-register-esm (e2e)', function () {
     expect(result.all).to.equal('hi\nbutton')
   })
 
-  it('should ignore ignorec files', async () => {
+  it('should ignore ignored files', async () => {
     expect(
       await executeFileWithLoader('jsx', 'ignored.js').catch((error) => error.message),
     ).to.include('SyntaxError')

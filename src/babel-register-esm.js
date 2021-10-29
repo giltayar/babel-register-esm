@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs/promises'
 import {fileURLToPath} from 'url'
 import babel from '@babel/core'
 
@@ -15,7 +16,8 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  */
 export async function resolve(specifier, context, defaultResolve) {
   try {
-    return await defaultResolve(specifier, context, defaultResolve)
+    const x = await defaultResolve(specifier, context, defaultResolve)
+    return x
   } catch (/**@type {any} */ error) {
     if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
 
@@ -89,12 +91,18 @@ function replaceExtension(url, fromExtension, toExtension) {
  *   format: string,
  *   url: string,
  * }} context
- * @param {Function} defaultTransformSource
+ * @param {Function} [defaultTransformSource]
  * @returns {Promise<{ source: !(string | SharedArrayBuffer | Uint8Array) }>}
  */
 export async function transformSource(source, context, defaultTransformSource) {
   const {url, format} = context
-  if (format !== 'module') return defaultTransformSource(source, context, defaultTransformSource)
+  if (format !== 'module' && format !== 'commonjs') {
+    if (defaultTransformSource) {
+      return defaultTransformSource(source, context, defaultTransformSource)
+    } else {
+      return {source}
+    }
+  }
 
   const stringSource =
     typeof source === 'string'
@@ -114,5 +122,36 @@ export async function transformSource(source, context, defaultTransformSource) {
     ? {
         source: sourceCode,
       }
-    : defaultTransformSource(source, context, defaultTransformSource)
+    : defaultTransformSource?.(source, context, defaultTransformSource)
+}
+
+/**
+ * @param {string} url
+ * @param {{
+ *   format: string,
+ * }} context
+ * @param {Function} defaultLoad
+ * @returns {Promise<{ source: !(string | SharedArrayBuffer | Uint8Array), format: string}>}
+ */
+export async function load(url, context, defaultLoad) {
+  const {format, source} = await defaultLoad(url, context, defaultLoad).catch(
+    async (/** @type {any} */ error) => {
+      if (error.code === 'ERR_UNKNOWN_FILE_EXTENSION') {
+        return {format: 'module', source: await fs.readFile(fileURLToPath(url))}
+      } else {
+        throw error
+      }
+    },
+  )
+
+  if (source) {
+    const transformed = await transformSource(source, {format, url}, undefined)
+    if (transformed) {
+      return {source: transformed.source, format}
+    } else {
+      return {format, source}
+    }
+  } else {
+    return {format, source}
+  }
 }
