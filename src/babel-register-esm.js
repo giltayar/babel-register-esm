@@ -1,5 +1,4 @@
 import path from 'path'
-import fs from 'fs/promises'
 import {fileURLToPath} from 'url'
 import babel from '@babel/core'
 
@@ -137,7 +136,7 @@ export async function load(url, context, defaultLoad) {
   const {format, source} = await defaultLoad(url, context, defaultLoad).catch(
     async (/** @type {any} */ error) => {
       if (error.code === 'ERR_UNKNOWN_FILE_EXTENSION') {
-        return {format: 'module', source: await fs.readFile(fileURLToPath(url))}
+        return await defaultLoad(url, {...context, format: 'module'}, defaultLoad)
       } else {
         throw error
       }
