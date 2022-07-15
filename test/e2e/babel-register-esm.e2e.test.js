@@ -1,7 +1,7 @@
 import path from 'path'
 import {describe, it} from 'mocha'
 import {expect} from 'chai'
-import execa from 'execa'
+import {execa} from 'execa'
 
 const __dirname = new URL('.', import.meta.url).pathname
 

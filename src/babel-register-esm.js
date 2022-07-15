@@ -10,12 +10,12 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  *   conditions: !Array<string>,
  *   parentURL: !(string | undefined),
  * }} context
- * @param {Function} defaultResolve
+ * @param {Function} nextResolve
  * @returns {Promise<{ url: string }>}
  */
-export async function resolve(specifier, context, defaultResolve) {
+export async function resolve(specifier, context, nextResolve) {
   try {
-    const x = await defaultResolve(specifier, context, defaultResolve)
+    const x = await nextResolve(specifier, context, nextResolve)
     return x
   } catch (/**@type {any} */ error) {
     if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
@@ -47,7 +47,7 @@ export async function resolve(specifier, context, defaultResolve) {
    */
   async function tryResolve(specifier) {
     try {
-      return await defaultResolve(specifier, context, defaultResolve)
+      return await nextResolve(specifier, context, nextResolve)
     } catch (error) {
       return undefined
     }
@@ -129,14 +129,14 @@ export async function transformSource(source, context, defaultTransformSource) {
  * @param {{
  *   format: string,
  * }} context
- * @param {Function} defaultLoad
+ * @param {Function} nextLoad
  * @returns {Promise<{ source: !(string | SharedArrayBuffer | Uint8Array), format: string}>}
  */
-export async function load(url, context, defaultLoad) {
-  const {format, source} = await defaultLoad(url, context, defaultLoad).catch(
+export async function load(url, context, nextLoad) {
+  const {format, source} = await nextLoad(url, context, nextLoad).catch(
     async (/** @type {any} */ error) => {
       if (error.code === 'ERR_UNKNOWN_FILE_EXTENSION') {
-        return await defaultLoad(url, {...context, format: 'module'}, defaultLoad)
+        return await nextLoad(url, {...context, format: 'module'}, nextLoad)
       } else {
         throw error
       }
