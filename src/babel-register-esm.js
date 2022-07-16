@@ -15,7 +15,7 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  */
 export async function resolve(specifier, context, nextResolve) {
   try {
-    const x = await nextResolve(specifier, context, nextResolve)
+    const x = await nextResolve(specifier, context)
     return x
   } catch (/**@type {any} */ error) {
     if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
@@ -47,7 +47,7 @@ export async function resolve(specifier, context, nextResolve) {
    */
   async function tryResolve(specifier) {
     try {
-      return await nextResolve(specifier, context, nextResolve)
+      return await nextResolve(specifier, context)
     } catch (error) {
       return undefined
     }
@@ -133,15 +133,13 @@ export async function transformSource(source, context, defaultTransformSource) {
  * @returns {Promise<{ source: !(string | SharedArrayBuffer | Uint8Array), format: string}>}
  */
 export async function load(url, context, nextLoad) {
-  const {format, source} = await nextLoad(url, context, nextLoad).catch(
-    async (/** @type {any} */ error) => {
-      if (error.code === 'ERR_UNKNOWN_FILE_EXTENSION') {
-        return await nextLoad(url, {...context, format: 'module'}, nextLoad)
-      } else {
-        throw error
-      }
-    },
-  )
+  const {format, source} = await nextLoad(url, context).catch(async (/** @type {any} */ error) => {
+    if (error.code === 'ERR_UNKNOWN_FILE_EXTENSION') {
+      return await nextLoad(url, {...context, format: 'module'})
+    } else {
+      throw error
+    }
+  })
 
   if (source) {
     const transformed = await transformSource(source, {format, url}, undefined)
