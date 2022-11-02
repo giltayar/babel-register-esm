@@ -63,7 +63,7 @@ export async function getFormat(url, context, defaultGetFormat) {
   const urlUrl = new URL(url)
 
   if (urlUrl.protocol === 'file:') {
-    const extension = path.extname(fileURLToPath(url))
+    const extension = path.extname(fileURLToPath(url)) || '.js'
 
     if (SUPPORTED_EXTENSIONS.includes(extension)) {
       return defaultGetFormat(replaceExtension(urlUrl, extension, '.js'), context, defaultGetFormat)
