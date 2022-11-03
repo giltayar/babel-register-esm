@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["es2020", "DOM"],
-    "target": "ES2020",
+    "outDir": "dist",
+    "lib": ["es6", "DOM"],
+    "target": "es6",
     "moduleResolution": "node",
     "module": "esnext",
     "strict": true,
@@ -13,7 +14,6 @@
     "isolatedModules": true,
     "allowJs": true,
     "checkJs": true,
-    "emitDeclarationOnly": true,
     "declarationDir": "types",
     "maxNodeModuleJsDepth": 0,
     "jsx": "preserve",
