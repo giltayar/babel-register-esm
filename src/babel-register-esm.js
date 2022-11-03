@@ -135,7 +135,7 @@ export async function transformSource(source, context, defaultTransformSource) {
 export async function load(url, context, nextLoad) {
   const {format, source} = await nextLoad(url, context).catch(async (/** @type {any} */ error) => {
     if (error.code === 'ERR_UNKNOWN_FILE_EXTENSION') {
-      return await nextLoad(url, {...context, format: 'module'})
+      return await nextLoad(url, {...context, format: 'commonjs' })
     } else {
       throw error
     }
