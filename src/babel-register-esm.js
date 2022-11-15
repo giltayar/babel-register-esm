@@ -19,7 +19,7 @@ export async function resolve(specifier, context, nextResolve) {
     const x = await nextResolve(specifier, context)
     return x
   } catch (/**@type {any} */ error) {
-    if (!specifier.startsWith('.') && !specifier.startsWith('/')) throw error
+    if (!specifier.startsWith('.') && !specifier.startsWith('file:')) throw error
 
     const extension = path.extname(
       fileURLToPath(/**@type {import('url').URL}*/ (new URL(specifier, context.parentURL))),
