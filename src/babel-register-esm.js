@@ -1,5 +1,5 @@
 import path from 'path'
-import {fileURLToPath} from 'url'
+import {fileURLToPath, pathToFileURL} from 'url'
 import babel from '@babel/core'
 
 const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
@@ -15,6 +15,7 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  */
 export async function resolve(specifier, context, nextResolve) {
   try {
+    if(path.isAbsolute(specifier)) specifier = pathToFileURL(specifier).toString();
     const x = await nextResolve(specifier, context)
     return x
   } catch (/**@type {any} */ error) {
