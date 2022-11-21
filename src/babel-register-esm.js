@@ -15,7 +15,7 @@ const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
  */
 export async function resolve(specifier, context, nextResolve) {
   try {
-    if(path.isAbsolute(specifier)) specifier = pathToFileURL(specifier).toString();
+    if (path.isAbsolute(specifier)) specifier = pathToFileURL(specifier).toString()
     const x = await nextResolve(specifier, context)
     return x
   } catch (/**@type {any} */ error) {
