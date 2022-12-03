@@ -53,6 +53,24 @@ export async function resolve(specifier, context, nextResolve) {
     }
   }
 }
+/**
+ * @param {string} url
+ * @param {Object} context
+ * @param {Function} defaultGetFormat
+ * @returns {Promise<{ format: string }>}
+ */
+export async function getFormat(url, context, defaultGetFormat) {
+  const urlUrl = new URL(url)
+
+  if (urlUrl.protocol === 'file:') {
+    const extension = path.extname(fileURLToPath(url))
+
+    if (SUPPORTED_EXTENSIONS.includes(extension)) {
+      return defaultGetFormat(replaceExtension(urlUrl, extension, '.js'), context, defaultGetFormat)
+    }
+  }
+  return defaultGetFormat(url, context, defaultGetFormat)
+}
 
 /**
  *
@@ -75,7 +93,7 @@ function replaceExtension(url, fromExtension, toExtension) {
  * @param {Function} [defaultTransformSource]
  * @returns {Promise<{ source: !(string | SharedArrayBuffer | Uint8Array) }>}
  */
-async function transformSource(source, context, defaultTransformSource) {
+export async function transformSource(source, context, defaultTransformSource) {
   const {url, format} = context
   if (format !== 'module' && format !== 'commonjs') {
     if (defaultTransformSource) {
