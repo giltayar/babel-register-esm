@@ -1,6 +1,7 @@
 import path from 'path'
 import {fileURLToPath} from 'url'
 import babel from '@babel/core'
+import babelConfig from '@dword-design/babel-config'
 
 const SUPPORTED_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx']
 
@@ -112,6 +113,7 @@ export async function transformSource(source, context, defaultTransformSource) {
 
   const sourceCode = (
     await babel.transformAsync(stringSource, {
+      ...babelConfig,
       sourceType: 'module',
       filename: fileURLToPath(url),
     })
