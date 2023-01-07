@@ -62,6 +62,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@dword-design/babel-config": "^2.1.1",
     "package-resolver": "^1.1.0"
   }
 }
