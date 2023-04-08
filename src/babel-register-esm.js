@@ -143,7 +143,7 @@ export async function load(url, context, nextLoad) {
     }
   })
 
-  if (source) {
+  if (!url.match(/\/node_modules\//) && source) {
     const transformed = await transformSource(source, {format, url}, undefined)
     if (transformed) {
       return {source: transformed.source, format}
