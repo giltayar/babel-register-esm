@@ -96,7 +96,7 @@ function replaceExtension(url, fromExtension, toExtension) {
  */
 export async function transformSource(source, context, defaultTransformSource) {
   const {url, format} = context
-  if (format !== 'module' && format !== 'commonjs') {
+  if (url.match(/\/node_modules\//) || (format !== 'module' && format !== 'commonjs')) {
     if (defaultTransformSource) {
       return defaultTransformSource(source, context, defaultTransformSource)
     } else {
