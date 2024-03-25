@@ -23,7 +23,7 @@
     "test:mocha-parallel": "npm run mocha -- --parallel",
     "test:eslint": "eslint --color --max-warnings=0 '**/*.js'",
     "test:typescript": "tsc --noEmit --emitDeclarationOnly false --pretty",
-    "mocha": "mocha --no-timeouts --exit --color 'test/unit/*.test.js' 'test/e2e/*.test.js'"
+    "mocha": "mocha --no-timeouts --exit --color 'test/e2e/*.test.js'"
   },
   "keywords": [
     "javascript",
