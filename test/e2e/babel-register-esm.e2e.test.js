@@ -68,7 +68,7 @@ describe('babel-register-esm (e2e)', function () {
 async function executeFileWithLoader(fixture, file) {
   return await execa(
     'node',
-    ['--no-warnings', '--loader', path.resolve(__dirname, '../../src/babel-register-esm.js'), file],
+    ['--no-warnings', '--import', path.resolve(__dirname, '../../src/babel-register-esm.js'), file],
     {all: true, cwd: path.resolve(__dirname, 'fixtures', fixture)},
   )
 }
